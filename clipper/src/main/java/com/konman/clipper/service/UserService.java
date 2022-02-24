@@ -9,5 +9,7 @@ public interface UserService {
 	public List<User> findUsers();
 	
 	public User saveUser(User theUser);
+	
+	public User findUserById(int userId);
 
 }
