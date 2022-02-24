@@ -26,20 +26,6 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	/*
-	 * private User user; private Contact contact;
-	 * 
-	 * @PostConstruct public void loadData() {
-	 * 
-	 * user = new User("Manjunatha", "Koni Gururaja",
-	 * "manjunatha.konigururaja@gmail.com", "6692104716"); contact = new
-	 * Contact("3100 Ohio Drive", null, "Frisco", "Texas", "75035");
-	 * user.setContact_detail(contact);
-	 * 
-	 * 
-	 * }
-	 */
-	
 	
 	// End point to get all the Clipper Users
 	@GetMapping("/users")
@@ -67,6 +53,7 @@ public class UserController {
 		User theUser = userService.findUserById(userId);
 		
 		return theUser;
-	}
+		
+	}// End of function
 	
-}
+}// End of the class
