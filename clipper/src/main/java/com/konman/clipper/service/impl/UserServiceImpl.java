@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService{
 	
 	// Autowiring the UserRepository Object
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	// Service to get All the Clipper users
 	@Override
@@ -47,5 +47,26 @@ public class UserServiceImpl implements UserService{
 		
 		return optionUser.get();
 	}
+	
+	// Service to update the User Details
+	@Override
+	public User updateUser(User theUser) {
+		
+		// first get the user from the DB with the User Id
+		Optional<User> currentUserOptional = userRepository.findById(theUser.getId());
+		
+		// If the user is not present in the database, then throw EWxception
+		if(!currentUserOptional.isPresent()) {
+			throw new UserNotFoundException("User not found with User Id:"+theUser.getId());
+		}
+		
+		// Save the user
+		User theDbUser = userRepository.save(theUser);
+		
+		return theDbUser;
+	}
+	
+	// End Point to update the User
+	
 
 }

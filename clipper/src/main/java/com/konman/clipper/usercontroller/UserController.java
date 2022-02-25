@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class UserController {
 	
 	// Autowiring the userService
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 	
 	// End point to get all the Clipper Users
@@ -55,5 +56,17 @@ public class UserController {
 		return theUser;
 		
 	}// End of function
+	
+	// End point to update the User and Contact Details
+	@PutMapping("/users")
+	public User updateUser(@RequestBody User theUser) {
+		
+		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUser.getId());
+		
+		User theDbUser = userService.updateUser(theUser);
+		
+		return theDbUser;
+	}
+	
 	
 }// End of the class
