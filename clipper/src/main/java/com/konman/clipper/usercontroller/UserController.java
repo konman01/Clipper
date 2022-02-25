@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +67,15 @@ public class UserController {
 		User theDbUser = userService.updateUser(theUser);
 		
 		return theDbUser;
+	}
+	
+	// End point to delete the User Based on User Id
+	@DeleteMapping("/users/{userId}")
+	public String deleteUserByUserId(@PathVariable int userId) {
+		
+		userService.deleteUser(userId);
+		ClipperUtility.clipperLogger.info("Deleting the user with user Id:"+userId);
+		return "Sucessfully Deleted the user with user Id: "+userId;
 	}
 	
 	

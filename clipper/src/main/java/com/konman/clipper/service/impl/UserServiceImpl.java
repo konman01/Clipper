@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.entity.User;
@@ -66,7 +67,23 @@ public class UserServiceImpl implements UserService{
 		return theDbUser;
 	}
 	
-	// End Point to update the User
+	// End Point to delete a User
+	@Override
+	public void deleteUser(int userId) {
+		
+		// first get the user from the DB with the User Id
+		Optional<User> currentUserOptional = userRepository.findById(userId);
+		
+		// If the user is not present in the database, then throw EWxception
+		if(!currentUserOptional.isPresent()) {
+			throw new UserNotFoundException("User not found with User Id:"+userId);
+		}		
+		
+		// Delete the User By User Id
+		userRepository.deleteById(userId);
+				
+		return;
+	}
 	
 
 }

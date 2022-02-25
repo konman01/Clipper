@@ -13,5 +13,7 @@ public interface UserService {
 	public User findUserById(int userId);
 	
 	public User updateUser(User theUser);
+	
+	public void deleteUser(int userId);
 
 }
