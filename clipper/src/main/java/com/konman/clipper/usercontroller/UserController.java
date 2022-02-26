@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.konman.clipper.entity.Contact;
@@ -78,6 +79,16 @@ public class UserController {
 		userService.deleteUser(userId);
 		ClipperUtility.clipperLogger.info("Deleting the user with user Id:"+userId);
 		return "Sucessfully Deleted the user with user Id: "+userId;
+	}
+	
+	// End Point to get the User based on the Email Address
+	@GetMapping("/users/email")
+	public User getUserByEmail(@RequestParam String email) {
+		
+		User user = userService.findUserByEmail(email);
+		
+		return user;
+		
 	}
 	
 	

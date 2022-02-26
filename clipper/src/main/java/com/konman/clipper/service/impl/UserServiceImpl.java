@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.entity.User;
@@ -77,7 +76,7 @@ public class UserServiceImpl implements UserService{
 		return theDbUser;
 	}
 	
-	// End Point to delete a User
+	// Service to delete a User
 	@Override
 	public void deleteUser(int userId) {
 		
@@ -94,6 +93,23 @@ public class UserServiceImpl implements UserService{
 				
 		return;
 	}
+	
+	// Service to Get the User Detail based on the Email
+
+	@Override
+	public User findUserByEmail(String email) {
+		
+		// Get the Users By Email Id
+		List<User>  users = userRepository.findByEmail(email);
+		
+		User dBUser  = users.get(0);
+		
+		return dBUser;
+		
+	}
+	
+	
+	
 	
 
 }
