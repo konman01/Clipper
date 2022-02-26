@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.service.UserService;
+import com.konman.clipper.utility.ClipperUtility;
+import com.konman.clipper.utility.UserAlreadyExistException;
 import com.konman.clipper.utility.UserNotFoundException;
 
 @Service
@@ -28,6 +30,14 @@ public class UserServiceImpl implements UserService{
 	// Service to save an user into Clipper DB
 	@Override
 	public User saveUser(User theUser) {
+		
+		String email = theUser.getEmail();
+		List<User> users = userRepository.findByEmail(email);
+		
+		if(users.size() > 0) {
+			ClipperUtility.clipperLogger.info("Already Exists Account with Email id:"+email);
+			throw new UserAlreadyExistException("User already exist with email id:"+email);
+		}
 		
 		User dbUser = userRepository.save(theUser);
 		
