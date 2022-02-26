@@ -1,6 +1,6 @@
 package com.konman.clipper.model;
 
-public class UserNotFoundResponse {
+public class UserErrorResponse {
 	
 	// Literals
 	private int status;
@@ -8,11 +8,11 @@ public class UserNotFoundResponse {
 	private long timestamp;
 	
 	// Constructors
-	public UserNotFoundResponse() {
+	public UserErrorResponse() {
 		
 	}
 
-	public UserNotFoundResponse(int status, String message, long timestamp) {
+	public UserErrorResponse(int status, String message, long timestamp) {
 		this.status = status;
 		this.message = message;
 		this.timestamp = timestamp;

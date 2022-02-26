@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.konman.clipper.model.UserNotFoundResponse;
+import com.konman.clipper.model.UserErrorResponse;
 
 @ControllerAdvice
 public class UserRestExceptionHandler {
@@ -14,9 +14,9 @@ public class UserRestExceptionHandler {
 	
 	// Function to throw the error Response when User Not Found
 	@ExceptionHandler
-	public ResponseEntity<UserNotFoundResponse>  handleException(UserNotFoundException exception){
+	public ResponseEntity<UserErrorResponse>  handleException(UserNotFoundException exception){
 		
-		UserNotFoundResponse error = new UserNotFoundResponse();
+		UserErrorResponse error = new UserErrorResponse();
 		error.setMessage(exception.getMessage());
 		error.setStatus(HttpStatus.NOT_FOUND.value());
 		error.setTimestamp(System.currentTimeMillis());
@@ -27,14 +27,26 @@ public class UserRestExceptionHandler {
 	
 	// Function to throw the error Response for general erro
 	@ExceptionHandler
-	public ResponseEntity<UserNotFoundResponse> handleException(Exception exception) {
+	public ResponseEntity<UserErrorResponse> handleException(Exception exception) {
 		
-		UserNotFoundResponse error = new UserNotFoundResponse();
+		UserErrorResponse error = new UserErrorResponse();
 		error.setMessage(exception.getMessage());
 		error.setStatus(HttpStatus.BAD_REQUEST.value());
 		error.setTimestamp(System.currentTimeMillis());
 		ClipperUtility.clipperLogger.info("Throwing General Exception");
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<UserErrorResponse> handleException(UserAlreadyExistException userAlreadyExistException){
+		
+		UserErrorResponse error = new UserErrorResponse();
+		error.setMessage(userAlreadyExistException.getMessage());
+		error.setStatus(HttpStatus.NOT_FOUND.value());
+		error.setTimestamp(System.currentTimeMillis());
+		ClipperUtility.clipperLogger.info("User Already Exists Exception");
+		return new ResponseEntity<UserErrorResponse>(error, HttpStatus.NOT_FOUND);
 		
 	}
 }
