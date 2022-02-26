@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.konman.clipper.entity.Contact;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.service.UserService;
@@ -28,6 +30,13 @@ public class UserController {
 	// Autowiring the userService
 	@Autowired
 	private UserService userService;
+	
+	// Autowiring the Model Mapper
+	@Autowired
+	private ModelMapper mapper;
+	
+	@Autowired
+	private Gson gson;
 	
 	
 	// End point to get all the Clipper Users
@@ -69,7 +78,6 @@ public class UserController {
 		
 		return theDbUser;
 		
-		
 	}
 	
 	// End point to delete the User Based on User Id
@@ -85,6 +93,7 @@ public class UserController {
 	@GetMapping("/users/email")
 	public User getUserByEmail(@RequestParam String email) {
 		
+		ClipperUtility.clipperLogger.info("Fetching the use with email:"+email);
 		User user = userService.findUserByEmail(email);
 		
 		return user;
