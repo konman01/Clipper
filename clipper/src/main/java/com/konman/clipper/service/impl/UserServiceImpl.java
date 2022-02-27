@@ -95,7 +95,6 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	// Service to Get the User Detail based on the Email
-
 	@Override
 	public User findUserByEmail(String email) {
 		
@@ -108,8 +107,4 @@ public class UserServiceImpl implements UserService{
 		
 	}
 	
-	
-	
-	
-
 }

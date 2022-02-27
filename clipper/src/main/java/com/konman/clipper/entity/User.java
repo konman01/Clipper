@@ -34,7 +34,7 @@ public class User {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "contact_detail_id")
-	private Contact contact_detail;
+	private Contact contactDetail;
 	
 	// Constructors
 	public User() {
@@ -89,20 +89,21 @@ public class User {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Contact getContact_detail() {
-		return contact_detail;
+	public Contact getContactDetail() {
+		return contactDetail;
 	}
 
-	public void setContact_detail(Contact contact_detail) {
-		this.contact_detail = contact_detail;
+	public void setContactDetail(Contact contactDetail) {
+		this.contactDetail = contactDetail;
 	}
 
-	// To String Method
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", phoneNumber=" + phoneNumber + ", contact_detail=" + contact_detail + "]";
+				+ ", phoneNumber=" + phoneNumber + ", contactDetail=" + contactDetail + "]";
 	}
+
+	
 	
 
 }

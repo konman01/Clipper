@@ -1,10 +1,13 @@
 package com.konman.clipper.usercontroller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.annotation.PostConstruct;
+import javax.print.attribute.standard.Destination;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.DestinationSetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.konman.clipper.entity.Contact;
 import com.konman.clipper.entity.User;
+import com.konman.clipper.model.UserJson;
 import com.konman.clipper.service.UserService;
 import com.konman.clipper.utility.ClipperUtility;
-import com.konman.clipper.utility.UserNotFoundException;
 
 @RestController
 @RequestMapping("/userapi")
@@ -33,7 +36,7 @@ public class UserController {
 	
 	// Autowiring the Model Mapper
 	@Autowired
-	private ModelMapper mapper;
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private Gson gson;
@@ -49,12 +52,20 @@ public class UserController {
 	
 	// End point to save the clipper user
 	@PostMapping("/users")
-	public User saveUser(@RequestBody User theUser) {
+	public User saveUser(@RequestBody UserJson theUserJson) {
+		
+		modelMapper.typeMap(UserJson.class, User.class).addMappings(mapper -> {
+			mapper.map(UserJson::getContactCreateJson,User::setContactDetail);
+		});
+		
+		
+		User user = modelMapper.map(theUserJson, User.class);
 		
 		ClipperUtility.clipperLogger.info("Started to load User into database");
-		User dbUser = userService.saveUser(theUser);
+		User dbUser = userService.saveUser(user);
 		ClipperUtility.clipperLogger.info("Loaded the user with Id:"+dbUser.getId());
 		return dbUser;
+		//return null;
 	}
 	
 	// End point to get the User based on User Id
@@ -70,11 +81,20 @@ public class UserController {
 	
 	// End point to update the User and Contact Details
 	@PutMapping("/users")
-	public User updateUser(@RequestBody User theUser) {
+	public User updateUser(@RequestBody UserJson theUserJson) {
 		
-		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUser.getId());
+		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUserJson.getId());
 		
-		User theDbUser = userService.updateUser(theUser);
+		System.out.println(theUserJson);
+		
+		modelMapper.typeMap(UserJson.class, User.class).addMappings(mapper -> {
+			mapper.map(UserJson::getContactCreateJson,User::setContactDetail);
+		});
+		
+		
+		User user = modelMapper.map(theUserJson, User.class);
+		
+		User theDbUser = userService.updateUser(user);
 		
 		return theDbUser;
 		
@@ -84,9 +104,13 @@ public class UserController {
 	@DeleteMapping("/users/{userId}")
 	public String deleteUserByUserId(@PathVariable int userId) {
 		
+		Map<String, String> responseMap = new LinkedHashMap<>();
+		
 		userService.deleteUser(userId);
+		responseMap.put("status", "sucess");
+		responseMap.put("message", "Deleted Clipper user with id:"+userId);
 		ClipperUtility.clipperLogger.info("Deleting the user with user Id:"+userId);
-		return "Sucessfully Deleted the user with user Id: "+userId;
+		return gson.toJson(responseMap);
 	}
 	
 	// End Point to get the User based on the Email Address
