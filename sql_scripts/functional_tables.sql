@@ -1,3 +1,13 @@
+DROP SCHEMA IF EXISTS `clipper`;
+
+CREATE SCHEMA `clipper`;
+
+use `clipper`;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `contact_detail`;
+
 -- Table to store the Contact details of the user
 CREATE TABLE `contact_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -8,6 +18,8 @@ CREATE TABLE `contact_detail` (
   `zip` varchar(20) DEFAULT NULL
   PRIMARY KEY (`id`)
 )
+
+DROP TABLE IF EXISTS `user_detail`;
 
 -- Table to store the basic information of the user
 CREATE TABLE `user_detail` (
@@ -21,3 +33,26 @@ CREATE TABLE `user_detail` (
   KEY `FK_CONTACT_DETAIL_idx` (`contact_detail_id`),
   CONSTRAINT `FK_CONTACT_DETAIL` FOREIGN KEY (`contact_detail_id`) REFERENCES `contact_detail` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `clipper_card`;
+
+-- Table to Save Clipper Card Information related to each user
+CREATE TABLE clipper_card (
+  `id` int(11) NOT NULL AUTO_INCREMENT=100000,
+  `amount` int(128) DEFAULT NULL,
+  `type` varchar(24) DEFAULT NULL,
+  `status` varchar(24) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  
+  PRIMARY KEY (`id`),
+  
+  KEY `FK_USER_idx` (`user_id`),
+  
+  CONSTRAINT `FK_USER` 
+  FOREIGN KEY (`user_id`) 
+  REFERENCES `user_detail` (`id`) 
+  
+  ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+SET FOREIGN_KEY_CHECKS = 1;

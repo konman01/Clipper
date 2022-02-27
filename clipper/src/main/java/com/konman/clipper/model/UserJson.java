@@ -38,7 +38,6 @@ public class UserJson implements Serializable{
 		this.contactCreateJson = contactCreateJson;
 	}
 	
-	
 
 	public int getId() {
 		return Id;
