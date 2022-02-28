@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-//@EqualsAndHashCode(callSuper = false)
 public class ContactVO implements Serializable{
 	
 	@JsonProperty("Id")
