@@ -14,18 +14,20 @@ import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.ClipperCardVO;
 import com.konman.clipper.service.ClipperCardService;
+import com.konman.clipper.utility.ClipperCardException;
 import com.konman.clipper.utility.ClipperCardStatusEnum;
 
 @Service
 public class ClipperCardServiceImpl implements ClipperCardService {
 	
+	// Repositories
 	@Autowired
 	private ClipperCardRepository clipperCardRepository;
 	
 	@Autowired
 	private UserRepository userRepository;
 	
-	
+	// ModelMapper Object
 	@Autowired ModelMapper mapper;
 
 	// Service to save a Clipper Card to a Customer
@@ -40,12 +42,12 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		List<User> users = userRepository.findByEmail(userEmail);
 		
 		if(users.size() == 0) {
-			throw new RuntimeException("User Not Found with the Email Id:"+userEmail);
+			throw new ClipperCardException("User Not Found with the Email Id:"+userEmail);
 		}
 		
 		// If the status is not initiated, then it is not possible to create the Clipper Card
 		if(!currentStatus.equals(ClipperCardStatusEnum.INITIATE.toString())) {
-			throw new RuntimeException("Clipper Card cannot be created with status:"+currentStatus);
+			throw new ClipperCardException("Clipper Card cannot be created with status:"+currentStatus);
 		}
 		
 		User user = users.get(0);
@@ -55,7 +57,7 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		List<ClipperCard> cards = clipperCardRepository.findByUserAndStatus(user, ClipperCardStatusEnum.ACTIVE.toString());
 		
 		if(cards.size() > 0) {
-			throw new RuntimeException("Clipper Card already exist with email:"+userEmail);
+			throw new ClipperCardException("Clipper Card already exist with email:"+userEmail);
 		}
 		
 		// Create and Save Clipper card to DB
@@ -88,7 +90,7 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		Optional<ClipperCard> clipperCardOptional = clipperCardRepository.findById(clipperId);
 		
 		if(!clipperCardOptional.isPresent()) {
-			throw new RuntimeException("Clipper Card does not exist with clipper id:"+clipperId);
+			throw new ClipperCardException("Clipper Card does not exist with clipper id:"+clipperId);
 		}
 		
 		ClipperCard clipperCard =  clipperCardOptional.get();
@@ -110,7 +112,7 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		Optional<ClipperCard> clipperCardOptional = clipperCardRepository.findById(clipperCardId);
 		
 		if(!clipperCardOptional.isPresent()) {
-			throw new RuntimeException("Clipper Card does not exist with id:"+clipperCardId);
+			throw new ClipperCardException("Clipper Card does not exist with id:"+clipperCardId);
 		}
 		
 		ClipperCard clipperCard = clipperCardOptional.get();
@@ -119,7 +121,7 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		
 		// Check if the status of the Clipper Card is ACTIVE, else throw Exception
 		if(!clipperCard.getStatus().equals(ClipperCardStatusEnum.ACTIVE.toString())) {
-			throw new RuntimeException("Clipper Card status is Not:"+ClipperCardStatusEnum.ACTIVE.toString()+", so unable to deactivate the card");
+			throw new ClipperCardException("Clipper Card status is Not:"+ClipperCardStatusEnum.ACTIVE.toString()+", so unable to deactivate the card");
 		}
 		
 		// Set the status to INACTIVE and save to database
@@ -135,4 +137,4 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		
 	}
 
-}
+}// End of the class
