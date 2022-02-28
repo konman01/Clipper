@@ -9,4 +9,6 @@ public interface ClipperCardService {
 	public ClipperCardDTO addClipperCard(ClipperCardVO theClipperCardVO);
 	
 	public ClipperCardDTO getClipperCardById(int clipperId);
+	
+	public ClipperCardDTO updateClipperCardStatus(ClipperCardVO theClipperCardVO);
 }

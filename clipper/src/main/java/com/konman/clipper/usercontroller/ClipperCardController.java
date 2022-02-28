@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,17 +25,21 @@ public class ClipperCardController {
 	// End point to create clipper card to the user
 	@PostMapping("/clippercard")
 	public ClipperCardDTO createCard(@RequestBody ClipperCardVO theClipperVO) {
-		
 		ClipperCardDTO clipperCardDto = clipperCardService.addClipperCard(theClipperVO);
-		
-		System.out.println(clipperCardDto);
-		
 		return clipperCardDto;
 	}
 	
+	// End point to get clipper card based on clipper Id
 	@GetMapping("/clippercard/{clipperId}")
 	public ClipperCardDTO getClipperCardById(@PathVariable int clipperId) {
-		return clipperCardService.getClipperCardById(clipperId);
+		ClipperCardDTO clipperCardDto = clipperCardService.getClipperCardById(clipperId);
+		return clipperCardDto;
 	}
-
+	
+	// End point to update the clipper card status to INACTIVE
+	@PutMapping("/clippercard")
+	public ClipperCardDTO updateClipperCardStatus(@RequestBody ClipperCardVO theClipperCardVO) {
+		ClipperCardDTO clipperCardDto = clipperCardService.updateClipperCardStatus(theClipperCardVO);
+		return clipperCardDto;
+	}
 }

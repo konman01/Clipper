@@ -2,6 +2,7 @@ package com.konman.clipper.model;
 
 public class ClipperCardVO {
 	
+	private int Id;
 	private String email;
 	private String type;
 	private String status;
@@ -41,6 +42,14 @@ public class ClipperCardVO {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public int getId() {
+		return Id;
+	}
+
+	public void setId(int id) {
+		Id = id;
 	}
 	
 	// toString mathod

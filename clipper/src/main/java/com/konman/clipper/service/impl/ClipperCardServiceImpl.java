@@ -59,7 +59,11 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		}
 		
 		// Create and Save Clipper card to DB
+		// Skip Setting Id on the Clipper Card Object
+		mapper.typeMap(ClipperCardDTO.class, ClipperCard.class).addMappings(mapper-> mapper.skip(ClipperCard::setId));
 		ClipperCard card = mapper.map(theClipperCardVo, ClipperCard.class);
+		
+		
 		card.setStatus(ClipperCardStatusEnum.ACTIVE.toString());
 		
 		// Adding Card to User
@@ -94,6 +98,41 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		clipperCardDTO.setEmail(clipperCard.getUser().getEmail());
 		
 		return clipperCardDTO;
+	}
+
+	// Service to update the Status of the Clipper Card to In-Active
+	@Override
+	public ClipperCardDTO updateClipperCardStatus(ClipperCardVO theClipperCardVO) {
+		
+		int clipperCardId = theClipperCardVO.getId();
+		
+		// Check if the Clipper Card exists with the given clipper Id 
+		Optional<ClipperCard> clipperCardOptional = clipperCardRepository.findById(clipperCardId);
+		
+		if(!clipperCardOptional.isPresent()) {
+			throw new RuntimeException("Clipper Card does not exist with id:"+clipperCardId);
+		}
+		
+		ClipperCard clipperCard = clipperCardOptional.get();
+		
+		System.out.println(clipperCard);
+		
+		// Check if the status of the Clipper Card is ACTIVE, else throw Exception
+		if(!clipperCard.getStatus().equals(ClipperCardStatusEnum.ACTIVE.toString())) {
+			throw new RuntimeException("Clipper Card status is Not:"+ClipperCardStatusEnum.ACTIVE.toString()+", so unable to deactivate the card");
+		}
+		
+		// Set the status to INACTIVE and save to database
+		clipperCard.setStatus(ClipperCardStatusEnum.INACTIVE.toString());
+		
+		ClipperCard dbClipperCard = clipperCardRepository.save(clipperCard);
+		
+		ClipperCardDTO clipperCardDTO = mapper.map(dbClipperCard, ClipperCardDTO.class);
+		
+		clipperCardDTO.setEmail(dbClipperCard.getUser().getEmail());
+		
+		return clipperCardDTO;
+		
 	}
 
 }

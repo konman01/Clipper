@@ -2,6 +2,6 @@ package com.konman.clipper.utility;
 
 public enum ClipperCardStatusEnum {
 	
-	ACTIVE, INITIATE, CANCELLED
+	ACTIVE, INITIATE, INACTIVE
 
 }
