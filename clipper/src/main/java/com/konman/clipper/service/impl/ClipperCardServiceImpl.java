@@ -1,6 +1,7 @@
 package com.konman.clipper.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.konman.clipper.dao.ClipperCardRepository;
 import com.konman.clipper.dao.UserRepository;
+import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.ClipperCardVO;
@@ -26,8 +28,9 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 	
 	@Autowired ModelMapper mapper;
 
+	// Service to save a Clipper Card to a Customer
 	@Override
-	public ClipperCard addClipperCard(ClipperCardVO theClipperCardVo) {
+	public ClipperCardDTO addClipperCard(ClipperCardVO theClipperCardVo) {
 		
 		// If the User Account is not present, then throw Exception
 		String userEmail = theClipperCardVo.getEmail();
@@ -47,20 +50,50 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		
 		User user = users.get(0);
 		
-		ClipperCard card = mapper.map(theClipperCardVo, ClipperCard.class);
 		
-		card.setType(ClipperCardStatusEnum.ACTIVE.toString());
+		// If the clipper card already exists for the user with status Actice, then do not allow to create new Clipper Card
+		List<ClipperCard> cards = clipperCardRepository.findByUserAndStatus(user, ClipperCardStatusEnum.ACTIVE.toString());
+		
+		if(cards.size() > 0) {
+			throw new RuntimeException("Clipper Card already exist with email:"+userEmail);
+		}
+		
+		// Create and Save Clipper card to DB
+		ClipperCard card = mapper.map(theClipperCardVo, ClipperCard.class);
+		card.setStatus(ClipperCardStatusEnum.ACTIVE.toString());
 		
 		// Adding Card to User
 		user.addCard(card);
 		
-		// Setting the User onn Clipper Card
+		// Setting the User on Clipper Card
 		card.setUser(user);
 		
-		
+		// Saving the Clipper Card into Repository
 		ClipperCard dbClipperCard = clipperCardRepository.save(card);
 		
-		return dbClipperCard;
+		ClipperCardDTO clipperCardDto = mapper.map(dbClipperCard, ClipperCardDTO.class);
+		clipperCardDto.setEmail(user.getEmail());
+		
+		return clipperCardDto;
+	}
+
+	// Service to get the Clipper Card Detail based on Clipper Id
+	@Override
+	public ClipperCardDTO getClipperCardById(int clipperId) {
+		
+		Optional<ClipperCard> clipperCardOptional = clipperCardRepository.findById(clipperId);
+		
+		if(!clipperCardOptional.isPresent()) {
+			throw new RuntimeException("Clipper Card does not exist with clipper id:"+clipperId);
+		}
+		
+		ClipperCard clipperCard =  clipperCardOptional.get();
+		
+		ClipperCardDTO clipperCardDTO = mapper.map(clipperCard, ClipperCardDTO.class);
+		
+		clipperCardDTO.setEmail(clipperCard.getUser().getEmail());
+		
+		return clipperCardDTO;
 	}
 
 }

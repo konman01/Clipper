@@ -1,11 +1,14 @@
 package com.konman.clipper.usercontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.model.ClipperCardVO;
 import com.konman.clipper.service.ClipperCardService;
@@ -20,11 +23,18 @@ public class ClipperCardController {
 	
 	// End point to create clipper card to the user
 	@PostMapping("/clippercard")
-	public ClipperCard createCard(@RequestBody ClipperCardVO theClipperVO) {
+	public ClipperCardDTO createCard(@RequestBody ClipperCardVO theClipperVO) {
 		
-		ClipperCard clipperCard = clipperCardService.addClipperCard(theClipperVO);
+		ClipperCardDTO clipperCardDto = clipperCardService.addClipperCard(theClipperVO);
 		
-		return clipperCard;
+		System.out.println(clipperCardDto);
+		
+		return clipperCardDto;
+	}
+	
+	@GetMapping("/clippercard/{clipperId}")
+	public ClipperCardDTO getClipperCardById(@PathVariable int clipperId) {
+		return clipperCardService.getClipperCardById(clipperId);
 	}
 
 }
