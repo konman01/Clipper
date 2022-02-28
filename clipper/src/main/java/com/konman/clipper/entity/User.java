@@ -1,5 +1,8 @@
 package com.konman.clipper.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -35,6 +39,9 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "contact_detail_id")
 	private Contact contactDetail;
+	
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+	private List<ClipperCard> clipperCards;
 	
 	// Constructors
 	public User() {
@@ -96,6 +103,24 @@ public class User {
 	public void setContactDetail(Contact contactDetail) {
 		this.contactDetail = contactDetail;
 	}
+
+	public List<ClipperCard> getClipperCards() {
+		return clipperCards;
+	}
+
+	public void setClipperCards(List<ClipperCard> clipperCards) {
+		this.clipperCards = clipperCards;
+	}
+	
+	public void addCard(ClipperCard theClipperCard) {
+		
+		if(clipperCards == null) {
+			clipperCards = new ArrayList<ClipperCard>();
+		}
+		clipperCards.add(theClipperCard);
+		theClipperCard.setUser(this);
+	}
+	
 
 	@Override
 	public String toString() {

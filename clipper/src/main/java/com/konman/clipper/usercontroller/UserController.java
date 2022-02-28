@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.konman.clipper.entity.User;
-import com.konman.clipper.model.UserJson;
+import com.konman.clipper.model.UserVO;
 import com.konman.clipper.service.UserService;
 import com.konman.clipper.utility.ClipperUtility;
 
@@ -48,10 +48,10 @@ public class UserController {
 	
 	// End point to save the clipper user
 	@PostMapping("/users")
-	public User saveUser(@RequestBody UserJson theUserJson) {
+	public User saveUser(@RequestBody UserVO theUserJson) {
 		
-		modelMapper.typeMap(UserJson.class, User.class).addMappings(mapper -> {
-			mapper.map(UserJson::getContactCreateJson,User::setContactDetail);
+		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
+			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
 		});
 		
 		
@@ -77,14 +77,14 @@ public class UserController {
 	
 	// End point to update the User and Contact Details
 	@PutMapping("/users")
-	public User updateUser(@RequestBody UserJson theUserJson) {
+	public User updateUser(@RequestBody UserVO theUserJson) {
 		
 		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUserJson.getId());
 		
 		System.out.println(theUserJson);
 		
-		modelMapper.typeMap(UserJson.class, User.class).addMappings(mapper -> {
-			mapper.map(UserJson::getContactCreateJson,User::setContactDetail);
+		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
+			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
 		});
 		
 		

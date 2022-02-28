@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 //@EqualsAndHashCode(callSuper = false)
-public class ContactJSON implements Serializable{
+public class ContactVO implements Serializable{
 	
 	@JsonProperty("Id")
 	private int Id;
@@ -26,11 +26,11 @@ public class ContactJSON implements Serializable{
 	@JsonProperty("zip")
 	private String zip;
 	
-	public ContactJSON() {
+	public ContactVO() {
 		
 	}
 	
-	public ContactJSON(String line1, String line2, String city, String state, String zip) {
+	public ContactVO(String line1, String line2, String city, String state, String zip) {
 		this.line1 = line1;
 		this.line2 = line2;
 		this.city = city;
@@ -90,10 +90,11 @@ public class ContactJSON implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ContactJSON [line1=" + line1 + ", line2=" + line2 + ", city=" + city + ", state=" + state + ", zip="
-				+ zip + "]";
+		return "ContactVO [Id=" + Id + ", line1=" + line1 + ", line2=" + line2 + ", city=" + city + ", state=" + state
+				+ ", zip=" + zip + "]";
 	}
 
+	
 	
 	
 }

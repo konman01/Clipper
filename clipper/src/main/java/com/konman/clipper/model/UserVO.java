@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserJson implements Serializable{
+public class UserVO implements Serializable{
 	
 	@JsonProperty("Id")
 	private int Id;
@@ -22,15 +22,15 @@ public class UserJson implements Serializable{
 	private String phoneNumber;
 	
 	@JsonProperty("contact_detail")
-	private ContactJSON contactCreateJson;
+	private ContactVO contactCreateJson;
 	
-	public UserJson() {
+	public UserVO() {
 		
 	}
 	
 
-	public UserJson(String firstName, String lastName, String email, String phoneNumber,
-			ContactJSON contactCreateJson) {
+	public UserVO(String firstName, String lastName, String email, String phoneNumber,
+			ContactVO contactCreateJson) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -82,23 +82,20 @@ public class UserJson implements Serializable{
 	}
 
 
-	public ContactJSON getContactCreateJson() {
+	public ContactVO getContactCreateJson() {
 		return contactCreateJson;
 	}
 
 
-	public void setContactCreateJson(ContactJSON contactCreateJson) {
+	public void setContactCreateJson(ContactVO contactCreateJson) {
 		this.contactCreateJson = contactCreateJson;
 	}
 
 
 	@Override
 	public String toString() {
-		return "UserJson [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", phoneNumber="
-				+ phoneNumber + ", contactCreateJson=" + contactCreateJson + "]";
+		return "UserVO [Id=" + Id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+				+ ", phoneNumber=" + phoneNumber + ", contactCreateJson=" + contactCreateJson + "]";
 	}
 	
-	
-
-
 }
