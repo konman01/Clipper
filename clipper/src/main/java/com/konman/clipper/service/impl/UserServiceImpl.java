@@ -3,11 +3,13 @@ package com.konman.clipper.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.entity.User;
+import com.konman.clipper.model.UserVO;
 import com.konman.clipper.service.UserService;
 import com.konman.clipper.utility.ClipperUtility;
 import com.konman.clipper.utility.UserAlreadyExistException;
@@ -19,6 +21,10 @@ public class UserServiceImpl implements UserService{
 	// Autowiring the UserRepository Object
 	@Autowired
 	private UserRepository userRepository;
+	
+	// Autowiring the Model Mapper
+	@Autowired
+	private ModelMapper modelMapper;
 
 	// Service to get All the Clipper users
 	@Override
@@ -28,9 +34,17 @@ public class UserServiceImpl implements UserService{
 
 	// Service to save an user into Clipper DB
 	@Override
-	public User saveUser(User theUser) {
+	public User saveUser(UserVO theUserVO) {
 		
-		String email = theUser.getEmail();
+		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
+			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
+		});
+		
+		
+		User user = modelMapper.map(theUserVO, User.class);
+		
+		String email = theUserVO.getEmail();
+		
 		List<User> users = userRepository.findByEmail(email);
 		
 		if(users.size() > 0) {
@@ -38,7 +52,7 @@ public class UserServiceImpl implements UserService{
 			throw new UserAlreadyExistException("User already exist with email id:"+email);
 		}
 		
-		User dbUser = userRepository.save(theUser);
+		User dbUser = userRepository.save(user);
 		
 		return dbUser;
 		
@@ -60,18 +74,25 @@ public class UserServiceImpl implements UserService{
 	
 	// Service to update the User Details
 	@Override
-	public User updateUser(User theUser) {
+	public User updateUser(UserVO theUserVO) {
 		
 		// first get the user from the DB with the User Id
-		Optional<User> currentUserOptional = userRepository.findById(theUser.getId());
+		Optional<User> currentUserOptional = userRepository.findById(theUserVO.getId());
 		
 		// If the user is not present in the database, then throw EWxception
 		if(!currentUserOptional.isPresent()) {
-			throw new UserNotFoundException("User not found with User Id:"+theUser.getId());
+			throw new UserNotFoundException("User not found with User Id:"+theUserVO.getId());
 		}
 		
+		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
+			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
+		});
+		
+		
+		User user = modelMapper.map(theUserVO, User.class);
+		
 		// Save the user
-		User theDbUser = userRepository.save(theUser);
+		User theDbUser = userRepository.save(user);
 		
 		return theDbUser;
 	}

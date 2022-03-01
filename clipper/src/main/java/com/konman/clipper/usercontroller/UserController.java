@@ -30,10 +30,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	// Autowiring the Model Mapper
-	@Autowired
-	private ModelMapper modelMapper;
-	
 	@Autowired
 	private Gson gson;
 	
@@ -48,17 +44,10 @@ public class UserController {
 	
 	// End point to save the clipper user
 	@PostMapping("/users")
-	public User saveUser(@RequestBody UserVO theUserJson) {
-		
-		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
-			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
-		});
-		
-		
-		User user = modelMapper.map(theUserJson, User.class);
-		
+	public User saveUser(@RequestBody UserVO theUserVO) {
+
 		ClipperUtility.clipperLogger.info("Started to load User into database");
-		User dbUser = userService.saveUser(user);
+		User dbUser = userService.saveUser(theUserVO);
 		ClipperUtility.clipperLogger.info("Loaded the user with Id:"+dbUser.getId());
 		return dbUser;
 		//return null;
@@ -77,24 +66,15 @@ public class UserController {
 	
 	// End point to update the User and Contact Details
 	@PutMapping("/users")
-	public User updateUser(@RequestBody UserVO theUserJson) {
+	public User updateUser(@RequestBody UserVO theUserVO) {
 		
-		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUserJson.getId());
+		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUserVO.getId());
 		
-		System.out.println(theUserJson);
-		
-		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
-			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
-		});
-		
-		
-		User user = modelMapper.map(theUserJson, User.class);
-		
-		User theDbUser = userService.updateUser(user);
-		
+		User theDbUser = userService.updateUser(theUserVO);
 		return theDbUser;
 		
 	}
+	
 	
 	// End point to delete the User Based on User Id
 	@DeleteMapping("/users/{userId}")
