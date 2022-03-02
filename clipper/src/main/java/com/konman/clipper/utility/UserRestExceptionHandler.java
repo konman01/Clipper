@@ -29,6 +29,7 @@ public class UserRestExceptionHandler {
 	@ExceptionHandler
 	public ResponseEntity<UserErrorResponse> handleException(Exception exception) {
 		
+		exception.printStackTrace();
 		UserErrorResponse error = new UserErrorResponse();
 		error.setMessage(exception.getMessage());
 		error.setStatus(HttpStatus.BAD_REQUEST.value());

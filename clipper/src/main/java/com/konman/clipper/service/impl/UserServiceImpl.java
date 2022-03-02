@@ -1,13 +1,21 @@
 package com.konman.clipper.service.impl;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.konman.clipper.dao.UserRepository;
+import com.konman.clipper.dto.ClipperCardDTO;
+import com.konman.clipper.dto.ContactDTO;
+import com.konman.clipper.dto.UserDTO;
+import com.konman.clipper.entity.ClipperCard;
+import com.konman.clipper.entity.Contact;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.UserVO;
 import com.konman.clipper.service.UserService;
@@ -28,8 +36,40 @@ public class UserServiceImpl implements UserService{
 
 	// Service to get All the Clipper users
 	@Override
-	public List<User> findUsers() {
-		return userRepository.findAll();
+	public List<UserDTO> findUsers() {
+		List<User> users =  userRepository.findAll();
+		List<UserDTO> userDtos = null;
+		
+		if(users.size() > 0) {
+			userDtos = new ArrayList<>();
+			
+			for(User user: users) {
+				
+				// Map the Contact to ContactDTO
+				UserDTO userDto = new UserDTO();
+				Contact contact = user.getContactDetail();
+				ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
+				userDto.setContactDetailDto(contactDto);
+				
+				// Map the ClipperCard to ClipperCard DTO
+				List<ClipperCard> clipperCards = user.getClipperCards();
+				Type listType = new TypeToken<ClipperCardDTO>(){}.getType();
+				List<ClipperCardDTO> clipperCardDtos = modelMapper.map(clipperCards,listType);
+				userDto.setClipperCardsDto(clipperCardDtos);
+				
+				// Map other values from the user to userDto
+				modelMapper.typeMap(User.class, UserDTO.class).addMappings(mapper->{
+					mapper.skip(User::getClipperCards, UserDTO::setClipperCardsDto);
+					mapper.skip(User::getContactDetail, UserDTO::setContactDetailDto);
+				});
+				
+			}// End of for loop
+			
+			
+		}// End of id condition
+		
+		
+		return userDtos;
 	}
 
 	// Service to save an user into Clipper DB

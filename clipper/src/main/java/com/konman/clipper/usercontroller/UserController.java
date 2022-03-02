@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.konman.clipper.dto.UserDTO;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.UserVO;
 import com.konman.clipper.service.UserService;
@@ -36,7 +37,7 @@ public class UserController {
 	
 	// End point to get all the Clipper Users
 	@GetMapping("/users")
-	public List<User> findUsers(){
+	public List<UserDTO> findUsers(){
 		ClipperUtility.clipperLogger.info("Fetching all the Users");
 		ClipperUtility.clipperLogger.info("/users");
 		return userService.findUsers();

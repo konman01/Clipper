@@ -2,12 +2,13 @@ package com.konman.clipper.service;
 
 import java.util.List;
 
+import com.konman.clipper.dto.UserDTO;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.UserVO;
 
 public interface UserService {
 	
-	public List<User> findUsers();
+	public List<UserDTO> findUsers();
 	
 	public User saveUser(UserVO theUserVO);
 	
