@@ -1,17 +1,25 @@
 package com.konman.clipper.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ContactDTO {
 	
+	@JsonProperty("id")
 	private int id;
 	
+	@JsonProperty("line1")
 	private String line1;
 	
+	@JsonProperty("line2")
 	private String line2;
 	
+	@JsonProperty("city")
 	private String city;
 	
+	@JsonProperty("state")
 	private String state;
 	
+	@JsonProperty("zip")
 	private String zip;
 	
 	public ContactDTO() {

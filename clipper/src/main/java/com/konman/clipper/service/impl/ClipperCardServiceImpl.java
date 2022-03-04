@@ -78,7 +78,6 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		ClipperCard dbClipperCard = clipperCardRepository.save(card);
 		
 		ClipperCardDTO clipperCardDto = mapper.map(dbClipperCard, ClipperCardDTO.class);
-		clipperCardDto.setEmail(user.getEmail());
 		
 		return clipperCardDto;
 	}
@@ -96,8 +95,6 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		ClipperCard clipperCard =  clipperCardOptional.get();
 		
 		ClipperCardDTO clipperCardDTO = mapper.map(clipperCard, ClipperCardDTO.class);
-		
-		clipperCardDTO.setEmail(clipperCard.getUser().getEmail());
 		
 		return clipperCardDTO;
 	}
@@ -130,8 +127,6 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		ClipperCard dbClipperCard = clipperCardRepository.save(clipperCard);
 		
 		ClipperCardDTO clipperCardDTO = mapper.map(dbClipperCard, ClipperCardDTO.class);
-		
-		clipperCardDTO.setEmail(dbClipperCard.getUser().getEmail());
 		
 		return clipperCardDTO;
 		

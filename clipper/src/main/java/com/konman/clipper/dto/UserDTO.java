@@ -2,20 +2,29 @@ package com.konman.clipper.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserDTO {
 	
+	@JsonProperty("id")
 	private int id;
 	
+	@JsonProperty("first_name")
 	private String firstName;
 	
+	@JsonProperty("last_name")
 	private String lastName;
 	
+	@JsonProperty("email")
 	private String email;
 	
+	@JsonProperty("phone_number")
 	private String phoneNumber;
 	
+	@JsonProperty("contact_detail")
 	private ContactDTO contactDetailDto;
 	
+	@JsonProperty("clipper_cards")
 	private List<ClipperCardDTO> clipperCardsDto;
 	
 	public UserDTO() {

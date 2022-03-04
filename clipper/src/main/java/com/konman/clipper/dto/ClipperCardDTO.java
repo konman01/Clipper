@@ -1,20 +1,27 @@
 package com.konman.clipper.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ClipperCardDTO {
 	
+	@JsonProperty("id")
 	private int Id;
-	private String email;
+	
+	@JsonProperty("status")
 	private String status;
+	
+	@JsonProperty("type")
 	private String type;
+	
+	@JsonProperty("amount")
 	private double amount;
 	
 	public ClipperCardDTO(){
 		
 	}
 
-	public ClipperCardDTO(int id, String email, String status, String type, double amount) {
+	public ClipperCardDTO(int id, String status, String type, double amount) {
 		Id = id;
-		this.email = email;
 		this.status = status;
 		this.type = type;
 		this.amount = amount;
@@ -28,13 +35,6 @@ public class ClipperCardDTO {
 		Id = id;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
 	public String getStatus() {
 		return status;

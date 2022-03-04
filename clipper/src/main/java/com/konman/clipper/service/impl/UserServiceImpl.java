@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService{
 	// Service to get All the Clipper users
 	@Override
 	public List<UserDTO> findUsers() {
+		
+		// Get all the users
 		List<User> users =  userRepository.findAll();
 		List<UserDTO> userDtos = null;
 		

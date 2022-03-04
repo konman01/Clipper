@@ -1,10 +1,19 @@
 package com.konman.clipper.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ClipperCardVO {
 	
+	
 	private int Id;
+	
+	@JsonProperty("email")
 	private String email;
+	
+	@JsonProperty("type")
 	private String type;
+	
+	@JsonProperty("status")
 	private String status;
 	
 	// Constructors 
