@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.Converters.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.modelmapper.TypeToken;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,27 +44,39 @@ public class UserServiceImpl implements UserService{
 		List<UserDTO> userDtos = null;
 		
 		if(users.size() > 0) {
+			
+			ClipperUtility.clipperLogger.info("Size is greater than 0");
+			// Create List of UserDTO
 			userDtos = new ArrayList<>();
 			
 			for(User user: users) {
 				
-				// Map the Contact to ContactDTO
-				UserDTO userDto = new UserDTO();
+				// Create the Type Map and assign Mappings required for UserDTO
+				TypeMap<User, UserDTO> userTypeMap = modelMapper.typeMap(User.class, UserDTO.class);
+				
+				userTypeMap.addMappings(mapper->{
+					mapper.skip(UserDTO::setContactDetailDto);
+					mapper.skip(UserDTO::setClipperCardsDto);
+				});
+				
+				//Map user to UserDTO
+				UserDTO userDto = modelMapper.map(user, UserDTO.class);
+
+				// Get the Contact Detail and map to ContactDTO
 				Contact contact = user.getContactDetail();
 				ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
 				userDto.setContactDetailDto(contactDto);
 				
+				
 				// Map the ClipperCard to ClipperCard DTO
 				List<ClipperCard> clipperCards = user.getClipperCards();
-				Type listType = new TypeToken<ClipperCardDTO>(){}.getType();
-				List<ClipperCardDTO> clipperCardDtos = modelMapper.map(clipperCards,listType);
+				List<ClipperCardDTO> clipperCardDtos = new ArrayList<>();
+				clipperCards.forEach(clippercard -> clipperCardDtos.add(modelMapper.map(clippercard, ClipperCardDTO.class)));
+				
+				// Add the user DTO to list
 				userDto.setClipperCardsDto(clipperCardDtos);
 				
-				// Map other values from the user to userDto
-				modelMapper.typeMap(User.class, UserDTO.class).addMappings(mapper->{
-					mapper.skip(User::getClipperCards, UserDTO::setClipperCardsDto);
-					mapper.skip(User::getContactDetail, UserDTO::setContactDetailDto);
-				});
+				userDtos.add(userDto);
 				
 			}// End of for loop
 			
