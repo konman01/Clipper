@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.Converters.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService{
 
 	// Service to fetch the user based on UserId
 	@Override
-	public User findUserById(int userId) {
+	public UserDTO findUserById(int userId) {
 		
 		Optional<User> optionUser = userRepository.findById(userId);
 		
@@ -126,7 +127,40 @@ public class UserServiceImpl implements UserService{
 			throw new UserNotFoundException("User Not found with is:"+userId);
 		}
 		
-		return optionUser.get();
+		
+		User user = optionUser.get();
+		UserDTO userDto = null;
+		
+		// If the user exists
+		if(user != null) {
+			
+			// Skip Mappings for Contact Details and Clipper Cards Details
+			TypeMap< User, UserDTO> userTypeMapper = modelMapper.typeMap(User.class, UserDTO.class);
+			userTypeMapper.addMappings(mapper->{
+				mapper.skip(UserDTO::setContactDetailDto);
+				mapper.skip(UserDTO::setClipperCardsDto);
+			});
+			
+			userDto = modelMapper.map(user, UserDTO.class);
+			
+			// Convert list of clipper cards to ClipperDTOs
+			List<ClipperCard> clipperCards = user.getClipperCards();
+			List<ClipperCardDTO> clipperCardDtos = new ArrayList<>();
+			clipperCards.forEach(clipperCard -> {
+				clipperCardDtos.add(modelMapper.map(clipperCard, ClipperCardDTO.class));
+			});
+			
+			userDto.setClipperCardsDto(clipperCardDtos);
+			
+			// Map the Contact to ContactDTO
+			Contact contact = user.getContactDetail();
+			ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
+			
+			userDto.setContactDetailDto(contactDto);
+			
+		}
+		
+		return userDto;
 	}
 	
 	// Service to update the User Details
@@ -174,14 +208,45 @@ public class UserServiceImpl implements UserService{
 	
 	// Service to Get the User Detail based on the Email
 	@Override
-	public User findUserByEmail(String email) {
+	public UserDTO findUserByEmail(String email) {
 		
 		// Get the Users By Email Id
 		List<User>  users = userRepository.findByEmail(email);
 		
-		User dBUser  = users.get(0);
+		User user  = users.get(0);
 		
-		return dBUser;
+		UserDTO userDto = null;
+		
+		// If the user exists
+		if(user != null) {
+			
+			// Skip Mappings for Contact Details and Clipper Cards Details
+			TypeMap< User, UserDTO> userTypeMapper = modelMapper.typeMap(User.class, UserDTO.class);
+			userTypeMapper.addMappings(mapper->{
+				mapper.skip(UserDTO::setContactDetailDto);
+				mapper.skip(UserDTO::setClipperCardsDto);
+			});
+			
+			userDto = modelMapper.map(user, UserDTO.class);
+			
+			// Convert list of clipper cards to ClipperDTOs
+			List<ClipperCard> clipperCards = user.getClipperCards();
+			List<ClipperCardDTO> clipperCardDtos = new ArrayList<>();
+			clipperCards.forEach(clipperCard -> {
+				clipperCardDtos.add(modelMapper.map(clipperCard, ClipperCardDTO.class));
+			});
+			
+			userDto.setClipperCardsDto(clipperCardDtos);
+			
+			// Map the Contact to ContactDTO
+			Contact contact = user.getContactDetail();
+			ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
+			
+			userDto.setContactDetailDto(contactDto);
+			
+		}
+		
+		return userDto;
 		
 	}
 	

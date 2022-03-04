@@ -12,12 +12,12 @@ public interface UserService {
 	
 	public User saveUser(UserVO theUserVO);
 	
-	public User findUserById(int userId);
+	public UserDTO findUserById(int userId);
 	
 	public User updateUser(UserVO theUserVO);
 	
 	public void deleteUser(int userId);
 
-	public User findUserByEmail(String email);
+	public UserDTO findUserByEmail(String email);
 
 }

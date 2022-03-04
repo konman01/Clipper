@@ -56,12 +56,12 @@ public class UserController {
 	
 	// End point to get the User based on User Id
 	@GetMapping("/users/{userId}")
-	public User findUserById(@PathVariable int userId) {
+	public UserDTO findUserById(@PathVariable int userId) {
 		ClipperUtility.clipperLogger.info("Fetching the User with user Id: "+userId);
 		
-		User theUser = userService.findUserById(userId);
+		UserDTO theUserDto = userService.findUserById(userId);
 		
-		return theUser;
+		return theUserDto;
 		
 	}// End of function
 	
@@ -92,12 +92,10 @@ public class UserController {
 	
 	// End Point to get the User based on the Email Address
 	@GetMapping("/users/email")
-	public User getUserByEmail(@RequestParam String email) {
-		
+	public UserDTO getUserByEmail(@RequestParam String email) {
 		ClipperUtility.clipperLogger.info("Fetching the use with email:"+email);
-		User user = userService.findUserByEmail(email);
-		
-		return user;
+		UserDTO userDto = userService.findUserByEmail(email);
+		return userDto;
 		
 	}
 	
