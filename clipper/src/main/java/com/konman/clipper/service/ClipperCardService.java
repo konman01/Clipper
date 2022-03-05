@@ -15,5 +15,5 @@ public interface ClipperCardService {
 	
 	public ClipperCardDTO updateClipperCardStatus(ClipperCardVO theClipperCardVO);
 	
-	public List<ClipperCardOrderDTO> getClipperCardOrders();
+	public ClipperCardOrderDTO getClipperCardOrders(int clipperId);
 }

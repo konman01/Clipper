@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.konman.clipper.dto.ClipperCardDTO;
+import com.konman.clipper.dto.ClipperCardOrderDTO;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.model.ClipperCardVO;
 import com.konman.clipper.service.ClipperCardService;
@@ -41,5 +42,11 @@ public class ClipperCardController {
 	public ClipperCardDTO updateClipperCardStatus(@RequestBody ClipperCardVO theClipperCardVO) {
 		ClipperCardDTO clipperCardDto = clipperCardService.updateClipperCardStatus(theClipperCardVO);
 		return clipperCardDto;
+	}
+	
+	// End point to get orders related to a Clipper Card
+	@GetMapping("/clippercard/order/{clipperId}")
+	public ClipperCardOrderDTO getClipperCardOrderDetails(@PathVariable int clipperId) {
+		return clipperCardService.getClipperCardOrders(clipperId);
 	}
 }

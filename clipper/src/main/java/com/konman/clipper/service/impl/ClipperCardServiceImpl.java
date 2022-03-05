@@ -1,17 +1,22 @@
 package com.konman.clipper.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.konman.clipper.dao.ClipperCardRepository;
+import com.konman.clipper.dao.ClipperOrderRepository;
 import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.dto.ClipperCardOrderDTO;
+import com.konman.clipper.dto.ClipperOrderDTO;
 import com.konman.clipper.entity.ClipperCard;
+import com.konman.clipper.entity.ClipperOrder;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.ClipperCardVO;
 import com.konman.clipper.service.ClipperCardService;
@@ -27,6 +32,9 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ClipperOrderRepository clipperOrderRepository;
 	
 	// ModelMapper Object
 	@Autowired ModelMapper mapper;
@@ -136,9 +144,43 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 	// Service to get orders related to ClipperCard
 
 	@Override
-	public List<ClipperCardOrderDTO> getClipperCardOrders() {
+	public ClipperCardOrderDTO getClipperCardOrders(int clipperId) {
 		
-		return null;
+		Optional<ClipperCard> clipperCardOptional = clipperCardRepository.findById(clipperId);
+		
+		// If there is No Clipper Card with the Clipper Id, then throw exception
+		if(!clipperCardOptional.isPresent()) {
+			throw new ClipperCardException("There is No Clipper Card with Clipper Id:"+clipperId);
+		}
+		
+		// Get the Clipper Card
+		ClipperCard clipperCard = clipperCardOptional.get();
+		
+		// Define the Type Map to Skip the Mapping od Clipper Orders and Map other fields in ClipperCardOrderDTO
+		TypeMap< ClipperCard, ClipperCardOrderDTO> clipperCardOrderTypeMap = mapper.createTypeMap(ClipperCard.class, ClipperCardOrderDTO.class);
+		clipperCardOrderTypeMap.addMappings(mapper->{
+			mapper.skip(ClipperCardOrderDTO::setClipperOrders);
+		});
+		
+		ClipperCardOrderDTO clipperCardOrderDTO= mapper.map(clipperCard, ClipperCardOrderDTO.class);
+		
+		// Create List of ClipperOrderDTO from ClipperOrder
+		List<ClipperOrderDTO> clipperOrderDTOs = new ArrayList<>();;
+		
+		// Create List of Clipper Orders
+		List<ClipperOrder> clipperOrders = clipperOrderRepository.findAll();
+		
+		if(clipperOrders.size() > 0) {
+			
+			clipperOrders.forEach(clipperOrderLocal -> clipperOrderDTOs.add(mapper.map(clipperOrderLocal, ClipperOrderDTO.class)));
+		
+		}
+		
+		// set the ClipperOrderDTO in ClipperCard
+		clipperCardOrderDTO.setClipperOrders(clipperOrderDTOs);
+		
+		
+		return clipperCardOrderDTO;
 	}
 
 }// End of the class
