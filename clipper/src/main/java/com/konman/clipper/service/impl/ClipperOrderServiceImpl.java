@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.konman.clipper.dao.ClipperCardRepository;
 import com.konman.clipper.dao.ClipperOrderRepository;
+import com.konman.clipper.dto.ClipperOrderDTO;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.entity.ClipperOrder;
-import com.konman.clipper.entity.ClipperOrderDTO;
 import com.konman.clipper.model.ClipperOrderVO;
 import com.konman.clipper.service.ClipperOrderService;
+import com.konman.clipper.utility.ClipperCardException;
+import com.konman.clipper.utility.ClipperCardStatusEnum;
 
 @Service
 public class ClipperOrderServiceImpl implements ClipperOrderService{
@@ -27,6 +29,7 @@ public class ClipperOrderServiceImpl implements ClipperOrderService{
 	@Autowired
 	private ClipperOrderRepository clipperOrderRepository;
 
+	// Service to Save the order to Clipper Card
 	@Override
 	public ClipperOrderDTO saveClipperOrder(ClipperOrderVO clipperOrderVO) {
 		
@@ -35,11 +38,16 @@ public class ClipperOrderServiceImpl implements ClipperOrderService{
 		// For the clipper Id, get the Clipper Order details
 		Optional<ClipperCard> clipperCardOptional = clipperCardRepository.findById(clipperId);
 		
+		// If the clipper card is not found, then throw exception
 		if(!clipperCardOptional.isPresent()) {
-			throw new RuntimeException("Clipper Card with Clipper Id :"+clipperId+" is not found");
+			throw new ClipperCardException("Clipper Card with Clipper Id :"+clipperId+" is not found");
 		}
 		
 		ClipperCard clipperCard = clipperCardOptional.get();
+		
+		if(!clipperCard.getStatus().equals(ClipperCardStatusEnum.ACTIVE)) {
+			throw new ClipperCardException("Clipper Card with Clipper Id: "+clipperId+ " is not Active");
+		}
 		
 		// Map the Clipper Order VO to Clipper Order
 		ClipperOrder clipperOrder = modelMapper.map(clipperOrderVO, ClipperOrder.class);
@@ -47,21 +55,14 @@ public class ClipperOrderServiceImpl implements ClipperOrderService{
 		// create the relationship between the Clipper Order and Clipper Card
 		clipperCard.addClipperOrder(clipperOrder);
 		
+		clipperCard.setAmount(clipperCard.getAmount() + clipperOrderVO.getAmount());
+		
 		// Save the clipper order to DB
 		ClipperOrder clipperOrderDb = clipperOrderRepository.save(clipperOrder);
-		
-		// Set the Type Map to skip[ the mapping on the Clipper Id
-		TypeMap< ClipperOrder, ClipperOrderDTO> clipperOrderTypeMap = modelMapper.typeMap(ClipperOrder.class, ClipperOrderDTO.class);
-		
-		clipperOrderTypeMap.addMappings(mapper->{
-			mapper.skip(ClipperOrderDTO::setClipperId);
-		});
 		
 		// Map the ClipperOrderDb to Clipper Order DTO object
 		ClipperOrderDTO clipperOrderDTO = modelMapper.map(clipperOrderDb, ClipperOrderDTO.class);
 		
-		// Set the Clipper Card Id on the Clipper Order
-		clipperOrderDTO.setClipperId(clipperId);
 		
 		return clipperOrderDTO;
 	}

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.konman.clipper.dao.ClipperCardRepository;
 import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.dto.ClipperCardDTO;
+import com.konman.clipper.dto.ClipperCardOrderDTO;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.ClipperCardVO;
@@ -130,6 +131,14 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		
 		return clipperCardDTO;
 		
+	}
+	
+	// Service to get orders related to ClipperCard
+
+	@Override
+	public List<ClipperCardOrderDTO> getClipperCardOrders() {
+		
+		return null;
 	}
 
 }// End of the class

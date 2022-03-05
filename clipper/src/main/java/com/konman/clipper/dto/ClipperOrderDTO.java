@@ -1,4 +1,4 @@
-package com.konman.clipper.entity;
+package com.konman.clipper.dto;
 
 import java.time.LocalDateTime;
 
@@ -17,10 +17,9 @@ public class ClipperOrderDTO {
 	@JsonProperty("order_date")
 	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime orderDate;
+
 	
-	@JsonProperty("clipper_id")
-	private int clipperId;
-	
+	// Constructors
 	public ClipperOrderDTO() {
 		
 	}
@@ -29,9 +28,9 @@ public class ClipperOrderDTO {
 		this.id = id;
 		this.amount = amount;
 		this.orderDate = orderDateTime;
-		this.clipperId = clipperId;
 	}
 
+	// Getters and Setters
 	public int getId() {
 		return id;
 	}
@@ -48,8 +47,6 @@ public class ClipperOrderDTO {
 		this.amount = amount;
 	}
 
-	
-
 	public LocalDateTime getOrderDate() {
 		return orderDate;
 	}
@@ -58,12 +55,5 @@ public class ClipperOrderDTO {
 		this.orderDate = orderDate;
 	}
 
-	public int getClipperId() {
-		return clipperId;
-	}
-
-	public void setClipperId(int clipperId) {
-		this.clipperId = clipperId;
-	}
 	
-}
+}// End of Classa
