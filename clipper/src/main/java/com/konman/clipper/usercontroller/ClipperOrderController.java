@@ -25,7 +25,5 @@ public class ClipperOrderController {
 		ClipperOrderDTO clipperOrderDTO = clipperOrderService.saveClipperOrder(clipperOrderVO);
 		return clipperOrderDTO;
 	}
-	
-	// End points to get All the Orders related to a ClipperCard
 
 }

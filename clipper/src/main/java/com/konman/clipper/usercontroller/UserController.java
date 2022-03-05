@@ -34,21 +34,12 @@ public class UserController {
 	@Autowired
 	private Gson gson;
 	
-	
-	// End point to get all the Clipper Users
-	@GetMapping("/users")
-	public List<UserDTO> findUsers(){
-		ClipperUtility.clipperLogger.info("Fetching all the Users");
-		ClipperUtility.clipperLogger.info("/users");
-		return userService.findUsers();
-	}
-	
 	// End point to save the clipper user
 	@PostMapping("/users")
-	public User saveUser(@RequestBody UserVO theUserVO) {
+	public UserDTO saveUser(@RequestBody UserVO theUserVO) {
 
 		ClipperUtility.clipperLogger.info("Started to load User into database");
-		User dbUser = userService.saveUser(theUserVO);
+		UserDTO dbUser = userService.saveUser(theUserVO);
 		ClipperUtility.clipperLogger.info("Loaded the user with Id:"+dbUser.getId());
 		return dbUser;
 		//return null;
@@ -58,7 +49,6 @@ public class UserController {
 	@GetMapping("/users/{userId}")
 	public UserDTO findUserById(@PathVariable int userId) {
 		ClipperUtility.clipperLogger.info("Fetching the User with user Id: "+userId);
-		
 		UserDTO theUserDto = userService.findUserById(userId);
 		
 		return theUserDto;
@@ -67,15 +57,14 @@ public class UserController {
 	
 	// End point to update the User and Contact Details
 	@PutMapping("/users")
-	public User updateUser(@RequestBody UserVO theUserVO) {
+	public UserDTO updateUser(@RequestBody UserVO theUserVO) {
 		
 		ClipperUtility.clipperLogger.info("Updating the user with UserId:"+theUserVO.getId());
 		
-		User theDbUser = userService.updateUser(theUserVO);
+		UserDTO theDbUser = userService.updateUser(theUserVO);
 		return theDbUser;
 		
 	}
-	
 	
 	// End point to delete the User Based on User Id
 	@DeleteMapping("/users/{userId}")

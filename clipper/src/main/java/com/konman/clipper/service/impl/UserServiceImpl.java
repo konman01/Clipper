@@ -38,61 +38,9 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ModelMapper modelMapper;
 
-	// Service to get All the Clipper users
-	@Override
-	public List<UserDTO> findUsers() {
-		
-		// Get all the users
-		List<User> users =  userRepository.findAll();
-		List<UserDTO> userDtos = null;
-		
-		if(users.size() > 0) {
-			
-			ClipperUtility.clipperLogger.info("Size is greater than 0");
-			// Create List of UserDTO
-			userDtos = new ArrayList<>();
-			
-			for(User user: users) {
-				
-				// Create the Type Map and assign Mappings required for UserDTO
-				TypeMap<User, UserDTO> userTypeMap = modelMapper.typeMap(User.class, UserDTO.class);
-				
-				userTypeMap.addMappings(mapper->{
-					mapper.skip(UserDTO::setContactDetailDto);
-					mapper.skip(UserDTO::setClipperCardsDto);
-				});
-				
-				//Map user to UserDTO
-				UserDTO userDto = modelMapper.map(user, UserDTO.class);
-
-				// Get the Contact Detail and map to ContactDTO
-				Contact contact = user.getContactDetail();
-				ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
-				userDto.setContactDetailDto(contactDto);
-				
-				
-				// Map the ClipperCard to ClipperCard DTO
-				List<ClipperCard> clipperCards = user.getClipperCards();
-				List<ClipperCardDTO> clipperCardDtos = new ArrayList<>();
-				clipperCards.forEach(clippercard -> clipperCardDtos.add(modelMapper.map(clippercard, ClipperCardDTO.class)));
-				
-				// Add the user DTO to list
-				userDto.setClipperCardsDto(clipperCardDtos);
-				
-				userDtos.add(userDto);
-				
-			}// End of for loop
-			
-			
-		}// End of id condition
-		
-		
-		return userDtos;
-	}
-
 	// Service to save an user into Clipper DB
 	@Override
-	public User saveUser(UserVO theUserVO) {
+	public UserDTO saveUser(UserVO theUserVO) {
 		
 		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
 			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
@@ -112,7 +60,20 @@ public class UserServiceImpl implements UserService{
 		
 		User dbUser = userRepository.save(user);
 		
-		return dbUser;
+		TypeMap< User, UserDTO> userTypeMapper = modelMapper.typeMap(User.class, UserDTO.class);
+		userTypeMapper.addMappings(mapper->{
+			mapper.skip(UserDTO::setContactDetailDto);
+			mapper.skip(UserDTO::setClipperCardsDto);
+		});
+		
+		UserDTO userDto = modelMapper.map(user, UserDTO.class);
+		
+		Contact contact = user.getContactDetail();
+		ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
+		
+		userDto.setContactDetailDto(contactDto);
+		
+		return userDto;
 		
 	}
 
@@ -165,7 +126,7 @@ public class UserServiceImpl implements UserService{
 	
 	// Service to update the User Details
 	@Override
-	public User updateUser(UserVO theUserVO) {
+	public UserDTO updateUser(UserVO theUserVO) {
 		
 		// first get the user from the DB with the User Id
 		Optional<User> currentUserOptional = userRepository.findById(theUserVO.getId());
@@ -185,7 +146,33 @@ public class UserServiceImpl implements UserService{
 		// Save the user
 		User theDbUser = userRepository.save(user);
 		
-		return theDbUser;
+		TypeMap< User, UserDTO> userTypeMapper = modelMapper.typeMap(User.class, UserDTO.class);
+		userTypeMapper.addMappings(mapper->{
+			mapper.skip(UserDTO::setContactDetailDto);
+			mapper.skip(UserDTO::setClipperCardsDto);
+		});
+		
+		UserDTO userDto = modelMapper.map(theDbUser, UserDTO.class);
+		
+		Contact contact = theDbUser.getContactDetail();
+		ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
+		
+		userDto.setContactDetailDto(contactDto);
+		
+		List<ClipperCard> clipperCards = theDbUser.getClipperCards();
+		List<ClipperCardDTO> clipperCardDtos = new ArrayList<>();
+		
+		System.out.println(clipperCards);
+		
+		if(clipperCards != null  && clipperCards.size() > 0) {
+			clipperCards.forEach(clipperCard -> {
+				clipperCardDtos.add(modelMapper.map(clipperCard, ClipperCardDTO.class));
+			});
+			
+			userDto.setClipperCardsDto(clipperCardDtos);
+		}
+		
+		return userDto;
 	}
 	
 	// Service to delete a User
