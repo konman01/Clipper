@@ -15,9 +15,9 @@ CREATE TABLE `contact_detail` (
   `line_2` varchar(128) DEFAULT NULL,
   `city` varchar(20) DEFAULT NULL,
   `state` varchar(45) DEFAULT NULL,
-  `zip` varchar(20) DEFAULT NULL
+  `zip` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-)
+);
 
 DROP TABLE IF EXISTS `user_detail`;
 
@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS `clipper_card`;
 
 -- Table to Save Clipper Card Information related to each user
 CREATE TABLE clipper_card (
-  `id` int(11) NOT NULL AUTO_INCREMENT=100000,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `amount` int(128) DEFAULT NULL,
   `type` varchar(24) DEFAULT NULL,
   `status` varchar(24) DEFAULT NULL,
@@ -54,5 +54,28 @@ CREATE TABLE clipper_card (
   
   ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `order_detail`;
+
+-- Table to track the order items
+CREATE TABLE order_detail(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `amount` int(128) DEFAULT NULL,
+  `order_date` Date DEFAULT NULL,
+  `clipper_id`  int(128) DEFAULT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `FK_CLIPPER_idx` (`clipper_id`),
+
+  CONSTRAINT `FK_CLIPPER` 
+  FOREIGN KEY (`clipper_id`)
+  REFERENCES `clipper_card` (`id`)
+
+  ON DELETE NO ACTION ON UPDATE NO ACTION
+
+)ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;
