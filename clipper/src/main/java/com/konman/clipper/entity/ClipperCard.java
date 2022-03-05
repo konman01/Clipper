@@ -1,5 +1,8 @@
 package com.konman.clipper.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -32,6 +36,9 @@ public class ClipperCard {
 	@JoinColumn(name="user_id")
 	private User user;
 	
+	@OneToMany(mappedBy = "clipperCard", cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+	private List<ClipperOrder> clipperOrders;
+	
 	// Constructors
 	public ClipperCard() {
 		
@@ -44,7 +51,6 @@ public class ClipperCard {
 	}
 	
 	// Generate Getters and Setters
-
 	public int getId() {
 		return id;
 	}
@@ -86,10 +92,24 @@ public class ClipperCard {
 	}
 	
 	// to String Method
-
 	@Override
 	public String toString() {
 		return "ClipperCard [amount=" + amount + ", type=" + type + ", status=" + status + "]";
+	}
+	
+	
+	// Adding the helper function to map the clipper Orders
+	public void addClipperOrder(ClipperOrder theClipperOrder) {
+		
+		if(theClipperOrder == null) {
+			clipperOrders = new ArrayList<>();
+		}
+		
+		clipperOrders.add(theClipperOrder);
+		theClipperOrder.setClipperCard(this);
+		
+		return;
+		
 	}
 	
 
