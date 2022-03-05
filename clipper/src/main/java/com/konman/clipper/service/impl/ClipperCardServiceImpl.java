@@ -179,7 +179,6 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 		// set the ClipperOrderDTO in ClipperCard
 		clipperCardOrderDTO.setClipperOrders(clipperOrderDTOs);
 		
-		
 		return clipperCardOrderDTO;
 	}
 
