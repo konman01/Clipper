@@ -42,24 +42,24 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserDTO saveUser(UserVO theUserVO) {
 		
+		// Map the UserVO to User Entity
 		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
 			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
 		});
-		
-		
 		User user = modelMapper.map(theUserVO, User.class);
 		
+		// If the email exists in the system, then do not allow to create new account
 		String email = theUserVO.getEmail();
-		
 		List<User> users = userRepository.findByEmail(email);
-		
 		if(users.size() > 0) {
 			ClipperUtility.clipperLogger.info("Already Exists Account with Email id:"+email);
 			throw new UserAlreadyExistException("User already exist with email id:"+email);
 		}
 		
+		// Save the user
 		User dbUser = userRepository.save(user);
 		
+		// Map the User lto UserDTO
 		TypeMap< User, UserDTO> userTypeMapper = modelMapper.typeMap(User.class, UserDTO.class);
 		userTypeMapper.addMappings(mapper->{
 			mapper.skip(UserDTO::setContactDetailDto);
@@ -67,7 +67,6 @@ public class UserServiceImpl implements UserService{
 		});
 		
 		UserDTO userDto = modelMapper.map(user, UserDTO.class);
-		
 		Contact contact = user.getContactDetail();
 		ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
 		
@@ -87,7 +86,6 @@ public class UserServiceImpl implements UserService{
 		if(!optionUser.isPresent()) {
 			throw new UserNotFoundException("User Not found with is:"+userId);
 		}
-		
 		
 		User user = optionUser.get();
 		UserDTO userDto = null;
@@ -136,11 +134,10 @@ public class UserServiceImpl implements UserService{
 			throw new UserNotFoundException("User not found with User Id:"+theUserVO.getId());
 		}
 		
+		// Map the UserVO to User
 		modelMapper.typeMap(UserVO.class, User.class).addMappings(mapper -> {
 			mapper.map(UserVO::getContactCreateJson,User::setContactDetail);
 		});
-		
-		
 		User user = modelMapper.map(theUserVO, User.class);
 		
 		// Save the user
@@ -158,19 +155,6 @@ public class UserServiceImpl implements UserService{
 		ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
 		
 		userDto.setContactDetailDto(contactDto);
-		
-		List<ClipperCard> clipperCards = theDbUser.getClipperCards();
-		List<ClipperCardDTO> clipperCardDtos = new ArrayList<>();
-		
-		System.out.println(clipperCards);
-		
-		if(clipperCards != null  && clipperCards.size() > 0) {
-			clipperCards.forEach(clipperCard -> {
-				clipperCardDtos.add(modelMapper.map(clipperCard, ClipperCardDTO.class));
-			});
-			
-			userDto.setClipperCardsDto(clipperCardDtos);
-		}
 		
 		return userDto;
 	}
