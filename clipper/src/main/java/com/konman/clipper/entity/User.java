@@ -43,6 +43,10 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
 	private List<ClipperCard> clipperCards;
 	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "account_detail_id")
+	private Account account;
+	
 	// Constructors
 	public User() {
 		
@@ -120,7 +124,15 @@ public class User {
 		clipperCards.add(theClipperCard);
 		theClipperCard.setUser(this);
 	}
-	
+
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
 
 	@Override
 	public String toString() {

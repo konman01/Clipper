@@ -12,7 +12,7 @@ import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.entity.User;
-import com.konman.clipper.model.ClipperCardVO;
+import com.konman.clipper.model.AddClipperCardRequestVO;
 import com.konman.clipper.service.ClipperCardService;
 import com.konman.clipper.utility.ClipperCardException;
 import com.konman.clipper.utility.ClipperCardStatusEnum;
@@ -32,7 +32,7 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 
 	// Service to save a Clipper Card to a Customer
 	@Override
-	public ClipperCardDTO addClipperCard(ClipperCardVO theClipperCardVo) {
+	public ClipperCardDTO addClipperCard(AddClipperCardRequestVO theClipperCardVo) {
 		
 		// If the User Account is not present, then throw Exception
 		String userEmail = theClipperCardVo.getEmail();
@@ -101,7 +101,7 @@ public class ClipperCardServiceImpl implements ClipperCardService {
 
 	// Service to update the Status of the Clipper Card to In-Active
 	@Override
-	public ClipperCardDTO updateClipperCardStatus(ClipperCardVO theClipperCardVO) {
+	public ClipperCardDTO updateClipperCardStatus(AddClipperCardRequestVO theClipperCardVO) {
 		
 		int clipperCardId = theClipperCardVO.getId();
 		

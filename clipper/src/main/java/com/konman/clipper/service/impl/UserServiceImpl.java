@@ -1,6 +1,7 @@
 package com.konman.clipper.service.impl;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +19,13 @@ import com.konman.clipper.dao.UserRepository;
 import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.dto.ContactDTO;
 import com.konman.clipper.dto.UserDTO;
+import com.konman.clipper.entity.Account;
 import com.konman.clipper.entity.ClipperCard;
 import com.konman.clipper.entity.Contact;
 import com.konman.clipper.entity.User;
 import com.konman.clipper.model.UserVO;
 import com.konman.clipper.service.UserService;
+import com.konman.clipper.utility.AccountStatusEnum;
 import com.konman.clipper.utility.ClipperUtility;
 import com.konman.clipper.utility.UserAlreadyExistException;
 import com.konman.clipper.utility.UserNotFoundException;
@@ -67,6 +70,7 @@ public class UserServiceImpl implements UserService{
 
 				// Get the Contact Detail and map to ContactDTO
 				Contact contact = user.getContactDetail();
+				
 				ContactDTO contactDto = modelMapper.map(contact, ContactDTO.class);
 				userDto.setContactDetailDto(contactDto);
 				
@@ -110,7 +114,12 @@ public class UserServiceImpl implements UserService{
 			throw new UserAlreadyExistException("User already exist with email id:"+email);
 		}
 		
+		// Create a Account Specific for this user
+		Account account = new Account(LocalDate.now(), null, 0, AccountStatusEnum.ACTIVE.toString());
+		user.setAccount(account);
+		
 		User dbUser = userRepository.save(user);
+		
 		
 		return dbUser;
 		
@@ -124,7 +133,7 @@ public class UserServiceImpl implements UserService{
 		
 		// If the User is Not present then throw the User Not Found Exception
 		if(!optionUser.isPresent()) {
-			throw new UserNotFoundException("User Not found with is:"+userId);
+			throw new UserNotFoundException("User Not found with id:"+userId);
 		}
 		
 		

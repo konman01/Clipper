@@ -76,7 +76,6 @@ public class UserController {
 		
 	}
 	
-	
 	// End point to delete the User Based on User Id
 	@DeleteMapping("/users/{userId}")
 	public String deleteUserByUserId(@PathVariable int userId) {

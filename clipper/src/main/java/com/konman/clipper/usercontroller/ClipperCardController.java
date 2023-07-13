@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.entity.ClipperCard;
-import com.konman.clipper.model.ClipperCardVO;
+import com.konman.clipper.model.AddClipperCardRequestVO;
 import com.konman.clipper.service.ClipperCardService;
 
 @RestController
@@ -24,7 +24,7 @@ public class ClipperCardController {
 	
 	// End point to create clipper card to the user
 	@PostMapping("/clippercard")
-	public ClipperCardDTO createCard(@RequestBody ClipperCardVO theClipperVO) {
+	public ClipperCardDTO createCard(@RequestBody AddClipperCardRequestVO theClipperVO) {
 		ClipperCardDTO clipperCardDto = clipperCardService.addClipperCard(theClipperVO);
 		return clipperCardDto;
 	}
@@ -38,7 +38,7 @@ public class ClipperCardController {
 	
 	// End point to update the clipper card status to INACTIVE
 	@PutMapping("/clippercard")
-	public ClipperCardDTO updateClipperCardStatus(@RequestBody ClipperCardVO theClipperCardVO) {
+	public ClipperCardDTO updateClipperCardStatus(@RequestBody AddClipperCardRequestVO theClipperCardVO) {
 		ClipperCardDTO clipperCardDto = clipperCardService.updateClipperCardStatus(theClipperCardVO);
 		return clipperCardDto;
 	}

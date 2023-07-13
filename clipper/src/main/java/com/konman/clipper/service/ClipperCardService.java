@@ -2,13 +2,13 @@ package com.konman.clipper.service;
 
 import com.konman.clipper.dto.ClipperCardDTO;
 import com.konman.clipper.entity.ClipperCard;
-import com.konman.clipper.model.ClipperCardVO;
+import com.konman.clipper.model.AddClipperCardRequestVO;
 
 public interface ClipperCardService {
 	
-	public ClipperCardDTO addClipperCard(ClipperCardVO theClipperCardVO);
+	public ClipperCardDTO addClipperCard(AddClipperCardRequestVO theClipperCardVO);
 	
 	public ClipperCardDTO getClipperCardById(int clipperId);
 	
-	public ClipperCardDTO updateClipperCardStatus(ClipperCardVO theClipperCardVO);
+	public ClipperCardDTO updateClipperCardStatus(AddClipperCardRequestVO theClipperCardVO);
 }
